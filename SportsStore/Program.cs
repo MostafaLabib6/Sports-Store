@@ -1,6 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+using SportsStore.Data;
+using SportsStore.Data.Repositories;
+using SportsStore.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<StoreDbContext>(S => S.UseSqlServer(builder.Configuration["ConnectionStrings:SportsStoreConnection"]));
+
+builder.Services.AddScoped<IStoreRepository, StoreRepository>();
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+
+
+
+app.UseStaticFiles();
+app.MapDefaultControllerRoute();
+
+//app.MapGet("/", () => "Hello World!");
+
+SeedDataInitializer.PopulateData(app);
 
 app.Run();
