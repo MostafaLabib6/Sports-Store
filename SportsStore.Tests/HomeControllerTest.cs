@@ -4,6 +4,7 @@ using Moq;
 using SportsStore.Controllers;
 using SportsStore.Data.Repositories;
 using SportsStore.Models;
+using System.Reflection;
 
 namespace SportsStore.Tests;
 
@@ -64,5 +65,40 @@ public class HomeControllerTest
         Assert.NotNull(result);
         Assert.True(_expectedName == result.Name);
     }
+    [Fact]
+    public void Pagination_ValidateRenderedProductsNames_ValidProductsNames()
+    {
+        //Arrnge
+        string[] _expectedNames = { "p1", "p2", "p3", "p4", "p5" };
+        Mock<IStoreRepository> mock = new();
+        mock.Setup(p => p.GetAll)
+            .Returns((new Product[]{
+                new Product{ Name = _expectedNames[0]},
+                new Product{ Name = _expectedNames[1]},
+                new Product{ Name = _expectedNames[2]},
+                new Product{ Name = _expectedNames[3]},
+                new Product{ Name = _expectedNames[4]}
+                ,
+            }).AsQueryable<Product>);
+
+        HomeController controller = new(mock.Object);
+
+        //getting private field pageSize via Reflaction and set _pageSize to 3 instead of 4
+        FieldInfo? _pageSize = typeof(HomeController).GetField("_pageSize",BindingFlags.NonPublic | BindingFlags.Instance);
+        
+        _pageSize?.SetValue(controller, 3);
+
+        IEnumerable<Product> result = (controller.Pagination(2) as ViewResult)?.Model as IEnumerable<Product>??Enumerable.Empty<Product>();
+
+        Product[] Actual = result.ToArray();
+
+
+        Assert.NotEmpty(Actual);
+        Assert.Equal(_expectedNames[3],Actual[0].Name);
+        Assert.Equal(_expectedNames[4],Actual[1].Name);
+
+ 
+    }
+
 
 }
