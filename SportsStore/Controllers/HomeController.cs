@@ -16,5 +16,9 @@ namespace SportsStore.Controllers
         {
             return View(_repository.GetAll);
         }
+        public IActionResult Details(string name)
+        {
+            return View(_repository.GetbyName(name));
+        }
     }
 }
