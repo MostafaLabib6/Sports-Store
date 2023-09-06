@@ -12,5 +12,7 @@ namespace SportsStore.Data.Repositories
         }
 
         public IQueryable<Product> GetAll => _dbContext.Products;
+
+        public Product? GetbyName(string name) => _dbContext.Products.FirstOrDefault(p => p.Name == name);
     }
 }
