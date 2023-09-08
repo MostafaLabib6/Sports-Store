@@ -24,6 +24,12 @@ app.MapControllerRoute(
     new { Controller = "Home", action = "Index" }
     );
 
+//app.MapControllerRoute(
+//    name: "pagination",
+//    pattern: "page{pageNumber}",
+//    new { Controller = "Home", action = "Index" }
+//    );
+
 app.MapDefaultControllerRoute();
 
 //app.MapGet("/", () => "Hello World!");
