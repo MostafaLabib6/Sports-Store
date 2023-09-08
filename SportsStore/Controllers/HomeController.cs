@@ -30,10 +30,12 @@ namespace SportsStore.Controllers
                     ItemsPerPage = _pageSize,
                 }
             };
+
             ProductList.PagingInfo.PageSettings();
 
             return View(ProductList);
-        }
+        
+            }
         public IActionResult Details(string name)
         {
             return View(_repository.GetbyName(name));
