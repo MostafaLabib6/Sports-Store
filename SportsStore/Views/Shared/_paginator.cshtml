@@ -7,6 +7,7 @@
             <li>
                 <a class="btn page-link" asp-controller="Home" asp-action="Index" asp-route-pageNumber="@(Model?.PagingInfo.StartPage)">Begin</a>
             </li>
+
             <li class="page-item ">
                 <a class="btn page-link" asp-controller="Home" asp-action="Index" asp-route-pageNumber="@(Model?.PagingInfo.CurrentPage > 1?Model?.PagingInfo.CurrentPage -1 : Model?.PagingInfo.CurrentPage)">Previous</a>
             </li>
@@ -21,6 +22,7 @@
             <li class="page-item ">
                 <a class="btn page-link" asp-controller="Home" asp-action="Index" asp-route-pageNumber="@(Model?.PagingInfo.CurrentPage<Model?.PagingInfo.EndPage? Model?.PagingInfo.CurrentPage + 1:Model?.PagingInfo.CurrentPage)">Next</a>
             </li>
+
             <li>
                 <a class="btn page-link" asp-controller="Home" asp-action="Index" asp-route-pageNumber="@(Model?.PagingInfo.EndPage)">Last</a>
             </li>
