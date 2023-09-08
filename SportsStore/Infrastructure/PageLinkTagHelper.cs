@@ -23,6 +23,7 @@ public class PageLinkTagHelper : TagHelper
     public string PageClass { get; set; } = String.Empty;
     public string PageClassNormal { get; set; } = String.Empty;
     public string PageClassSelected { get; set; } = String.Empty;
+
     public string? PageAction { get; set; }
     public override void Process(TagHelperContext context,
     TagHelperOutput output)
