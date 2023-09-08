@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SportsStore.Data;
 using SportsStore.Data.Repositories;
@@ -17,6 +18,12 @@ var app = builder.Build();
 
 
 app.UseStaticFiles();
+app.MapControllerRoute(
+    name: "pagination",
+    pattern: "page{pageNumber}",
+    new { Controller = "Home", action = "Index" }
+    );
+
 app.MapDefaultControllerRoute();
 
 //app.MapGet("/", () => "Hello World!");
