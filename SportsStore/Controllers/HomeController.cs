@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SportsStore.Data.Repositories;
-using SportsStore.Models.ViewModels;
 
 namespace SportsStore.Controllers
 {
@@ -14,25 +13,9 @@ namespace SportsStore.Controllers
             _repository = repository;
         }
 
-        //[HttpGet("page{pageNumber}")]
-        public IActionResult Index(int pageNumber = 1)
+        public IActionResult Index()
         {
-            ProductListViewModel ProductList = new()
-            {
-                Products = _repository.GetAll
-                .Skip((pageNumber - 1) * _pageSize)
-                .Take(_pageSize),
-
-                PagingInfo = new PagingInfoViewModel
-                {
-                    TotalItems = _repository.GetAll.Count(),
-                    CurrentPage = pageNumber,
-                    ItemsPerPage = _pageSize,
-                }
-            };
-            ProductList.PagingInfo.PageSettings();
-
-            return View(ProductList);
+            return View(_repository.GetAll);
         }
         public IActionResult Details(string name)
         {
@@ -45,24 +28,6 @@ namespace SportsStore.Controllers
                 _repository.GetAll
                 .Skip((ProductPage - 1) * _pageSize)
                 .Take(_pageSize));
-        }
-
-        [HttpGet("Home/Page{ProductPage}")]
-        public IActionResult Pagination2(int ProductPage = 1)
-        {
-            ProductListViewModel ProductList = new()
-            {
-                Products = _repository.GetAll
-                .Skip((ProductPage - 1) * _pageSize)
-                .Take(_pageSize),
-                PagingInfo = new PagingInfoViewModel
-                {
-                    CurrentPage = ProductPage,
-                    ItemsPerPage = _pageSize,
-                    TotalItems = _repository.GetAll.Count()
-                }
-            };
-            return View(ProductList);
         }
     }
 }

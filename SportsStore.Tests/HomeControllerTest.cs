@@ -4,7 +4,6 @@ using Moq;
 using SportsStore.Controllers;
 using SportsStore.Data.Repositories;
 using SportsStore.Models;
-using SportsStore.Models.ViewModels;
 using System.Reflection;
 
 namespace SportsStore.Tests;
@@ -85,51 +84,20 @@ public class HomeControllerTest
         HomeController controller = new(mock.Object);
 
         //getting private field pageSize via Reflaction and set _pageSize to 3 instead of 4
-        FieldInfo? _pageSize = typeof(HomeController).GetField("_pageSize", BindingFlags.NonPublic | BindingFlags.Instance);
-
+        FieldInfo? _pageSize = typeof(HomeController).GetField("_pageSize",BindingFlags.NonPublic | BindingFlags.Instance);
+        
         _pageSize?.SetValue(controller, 3);
 
-        IEnumerable<Product> result = (controller.Pagination(2) as ViewResult)?.Model as IEnumerable<Product> ?? Enumerable.Empty<Product>();
+        IEnumerable<Product> result = (controller.Pagination(2) as ViewResult)?.Model as IEnumerable<Product>??Enumerable.Empty<Product>();
 
         Product[] Actual = result.ToArray();
 
 
         Assert.NotEmpty(Actual);
-        Assert.Equal(_expectedNames[3], Actual[0].Name);
-        Assert.Equal(_expectedNames[4], Actual[1].Name);
+        Assert.Equal(_expectedNames[3],Actual[0].Name);
+        Assert.Equal(_expectedNames[4],Actual[1].Name);
 
-
-    }
-    [Fact]
-    public void Pagination2_validateSendPaginationViewModel_ValidPagination()
-    {
-        //Arrnge
-        Mock<IStoreRepository> mock = new();
-        mock.Setup(p => p.GetAll).Returns((new Product[]
-        {
-             new Product { Name = "P1"},
-             new Product { Name = "P2"},
-             new Product { Name = "P3"},
-             new Product { Name = "P4"},
-             new Product { Name = "P5"}
-        }).AsQueryable<Product>);
-
-        HomeController controller = new(mock.Object);
-
-        FieldInfo? _pageSize = typeof(HomeController).GetField("_pageSize", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        _pageSize?.SetValue(controller, 3);
-
-        //Act
-        ProductListViewModel result = (controller.Pagination2(2) as ViewResult)?.Model as ProductListViewModel ?? new();
-
-
-        //assert
-        PagingInfoViewModel pageInfo = result.PagingInfo;
-        Assert.Equal(2, pageInfo.CurrentPage);
-        Assert.Equal(3, pageInfo.ItemsPerPage);
-        Assert.Equal(5, pageInfo.TotalItems);
-        Assert.Equal(2, pageInfo.TotalPages);
+ 
     }
 
 

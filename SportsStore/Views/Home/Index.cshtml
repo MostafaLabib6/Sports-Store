@@ -1,23 +1,12 @@
-﻿@{
-    Layout = "_Layout";
-}
-@model ProductListViewModel
+﻿@model IQueryable<Product>
 
 <h1>Welcome to Store</h1>
 
-@foreach (var p in Model.Products ?? Enumerable.Empty<Product>())
+@foreach (var p in Model ?? Enumerable.Empty<Product>())
 {
-    <div class="card card-outline-primary m-1 p-1">
-        <div class="bg-faded p-1">
-            <h4>
-                @p.Name
-                <span class="badge rounded-pill bg-primary text-white"
-                      style="float:right">
-                    <small>@p.Price.ToString("c")</small>
-                </span>
-            </h4>
-        </div>
-        <div class="card-text p-1">@p.Description</div>
+    <div>
+        <h3>@p.Name</h3>
+        @p.Description
+        <h4>@p.Price.ToString("c")</h4>
     </div>
 }
-<partial name="_paginator" model="@Model" />
