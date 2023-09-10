@@ -21,31 +21,31 @@ public class HomeControllerTest
             new Product{
                 Name="product 1",Price=1.00m,
                 Description="this description for product 1",
-                Category="Categroy 1"
+                Category = "Category 1"
             },
 
             new Product{
                 Name="product 2",Price=2.00m,
                 Description="this description for product 2",
-                Category="Categroy 2"
+                Category = "Category 2"
             },
 
             new Product{
                 Name="product 3",Price=3.00m,
                 Description="this description for product 3",
-                Category="Categroy 3"
+                Category = "Category 3"
             },
     }).AsQueryable<Product>());
 
         HomeController controller = new HomeController(mock.Object);
 
         //Act
-        IEnumerable<Product>? Result = (controller.Index() as ViewResult)?.ViewData.Model as IEnumerable<Product>;
+        ProductListViewModel? Result = (controller.Index() as ViewResult)?.Model as ProductListViewModel??new();
 
 
 
         //Assert
-        Product[] Actual = Result?.ToArray()
+        Product[] Actual = Result.Products?.ToArray()
             ?? Array.Empty<Product>();
         Assert.True(Actual.Length == 3);
 
@@ -130,6 +130,41 @@ public class HomeControllerTest
         Assert.Equal(3, pageInfo.ItemsPerPage);
         Assert.Equal(5, pageInfo.TotalItems);
         Assert.Equal(2, pageInfo.TotalPages);
+    }
+    [Fact]
+    public void Index_FilterbyCategoryandPage_ValidFilter()
+    {
+        //Arrnge
+        Mock<IStoreRepository> mock = new();
+        mock.Setup(p => p.GetAll).Returns((new Product[]{
+            new Product{ Name="p1",Category="Cat1"},
+            new Product{ Name="p1",Category="Cat2"},
+            new Product{ Name="p1",Category="Cat1"},            
+            new Product{ Name="p1",Category="Cat2"},
+            new Product{ Name="p1",Category="Cat1"},
+            new Product{ Name="p1",Category="Cat2"},
+            new Product{ Name="p1",Category="Cat3"},
+            new Product{ Name="p1",Category="Cat3"},
+            }).AsQueryable<Product>);
+        HomeController controller = new(mock.Object);
+        
+        FieldInfo? _pageSize = typeof(HomeController).GetField("_pageSize", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        _pageSize?.SetValue(controller, 8);
+
+        //Act
+        ProductListViewModel result = (controller.Index("Cat2",1) as ViewResult)?.Model as ProductListViewModel ?? new();
+        Product[] products = result.Products.ToArray();
+
+        //Assert
+        Assert.NotNull(products);
+        Assert.Equal(3, products.Length);
+        Assert.Equal("Cat2",products[0].Category);
+        Assert.Equal("Cat2",products[1].Category);
+        Assert.Equal("Cat2",products[2].Category);
+        
+
+
     }
 
 
