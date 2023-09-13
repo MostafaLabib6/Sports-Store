@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
+using SportsStore.Componets;
 using SportsStore.Controllers;
 using SportsStore.Data.Repositories;
 using SportsStore.Models;
@@ -40,7 +42,7 @@ public class HomeControllerTest
         HomeController controller = new HomeController(mock.Object);
 
         //Act
-        ProductListViewModel? Result = (controller.Index() as ViewResult)?.Model as ProductListViewModel??new();
+        ProductListViewModel? Result = (controller.Index() as ViewResult)?.Model as ProductListViewModel ?? new();
 
 
 
@@ -139,7 +141,7 @@ public class HomeControllerTest
         mock.Setup(p => p.GetAll).Returns((new Product[]{
             new Product{ Name="p1",Category="Cat1"},
             new Product{ Name="p1",Category="Cat2"},
-            new Product{ Name="p1",Category="Cat1"},            
+            new Product{ Name="p1",Category="Cat1"},
             new Product{ Name="p1",Category="Cat2"},
             new Product{ Name="p1",Category="Cat1"},
             new Product{ Name="p1",Category="Cat2"},
@@ -147,23 +149,58 @@ public class HomeControllerTest
             new Product{ Name="p1",Category="Cat3"},
             }).AsQueryable<Product>);
         HomeController controller = new(mock.Object);
-        
+
         FieldInfo? _pageSize = typeof(HomeController).GetField("_pageSize", BindingFlags.NonPublic | BindingFlags.Instance);
 
         _pageSize?.SetValue(controller, 8);
 
         //Act
-        ProductListViewModel result = (controller.Index("Cat2",1) as ViewResult)?.Model as ProductListViewModel ?? new();
+        ProductListViewModel result = (controller.Index("Cat2", 1) as ViewResult)?.Model as ProductListViewModel ?? new();
         Product[] products = result.Products.ToArray();
 
         //Assert
         Assert.NotNull(products);
         Assert.Equal(3, products.Length);
-        Assert.Equal("Cat2",products[0].Category);
-        Assert.Equal("Cat2",products[1].Category);
-        Assert.Equal("Cat2",products[2].Category);
-        
+        Assert.Equal("Cat2", products[0].Category);
+        Assert.Equal("Cat2", products[1].Category);
+        Assert.Equal("Cat2", products[2].Category);
 
+
+
+    }
+    [Fact]
+    public void NavMenu_ValidateCategoriesNames_ValidCategoriesNames()
+    {
+        //Arrange
+        Mock<IStoreRepository> mock = new();
+        mock.Setup(p => p.GetAll).Returns((new Product[]{
+            new Product{ Name="p1" , Category="C1" },
+            new Product{ Name="p2" , Category="C2" },
+            new Product{ Name="p3" , Category="C1" },
+            new Product{ Name="p4" , Category="C1" },
+            new Product{ Name="p5" , Category="C4" },
+            new Product{ Name="p6" , Category="C5" },
+            }).AsQueryable<Product>
+        );
+
+        NavMenuViewComponent navMenu = new NavMenuViewComponent(mock.Object);
+
+
+        //Act == Check here as ViewViewComponentResult
+        IEnumerable<string> cats = (IEnumerable<string>?) (navMenu.Invoke() as ViewViewComponentResult)?.ViewData?.Model ??Enumerable.Empty<string>();
+        string[] categories = cats.ToArray();
+
+        Assert.NotNull(categories);
+        Assert.Equal(4, categories.Length);
+        Assert.True(Enumerable.SequenceEqual(
+            new string[]{ 
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            }
+            ,categories
+        ));
 
     }
 
