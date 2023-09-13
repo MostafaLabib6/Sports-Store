@@ -14,6 +14,7 @@ public class NavMenuViewComponent : ViewComponent
 
     public IViewComponentResult Invoke()
     {
+        ViewBag.SelectedCategory = RouteData.Values["category"];
         return View(
             _storeRepository?.GetAll
             .Select(x => x.Category)
