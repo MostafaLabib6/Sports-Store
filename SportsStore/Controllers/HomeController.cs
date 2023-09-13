@@ -15,12 +15,12 @@ namespace SportsStore.Controllers
         }
 
         //[HttpGet("page{pageNumber}")]
-        public IActionResult Index(string? category,int pageNumber = 1)
+        public IActionResult Index(string? category= null,int pageNumber = 1)
         {
             ProductListViewModel ProductList = new()
             {
                 Products = _repository.GetAll
-                .Where(p => category==null ||p.Category==category)
+                .Where(p => p.Category == category || category == null)
                 .Skip((pageNumber - 1) * _pageSize)
                 .Take(_pageSize),
 
