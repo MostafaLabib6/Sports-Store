@@ -24,11 +24,17 @@ app.MapControllerRoute(
     new { Controller = "Home", action = "Index" }
     );
 
-//app.MapControllerRoute(
-//    name: "pagination",
-//    pattern: "page{pageNumber}",
-//    new { Controller = "Home", action = "Index" }
-//    );
+//route mapping for index with category and page
+app.MapControllerRoute(
+    name: "CategoryPage",
+    pattern: "{category}/page{pageNumber}",
+    new { Controller = "Home", action = "Index" }
+    );
+app.MapControllerRoute(
+    name: "CategoryPage",
+    pattern: "{category}",
+    new { Controller = "Home", action = "Index" }
+    );
 
 app.MapDefaultControllerRoute();
 
