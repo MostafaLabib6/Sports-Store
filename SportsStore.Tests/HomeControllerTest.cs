@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using SportsStore.Componets;
@@ -187,21 +190,52 @@ public class HomeControllerTest
 
 
         //Act == Check here as ViewViewComponentResult
-        IEnumerable<string> cats = (IEnumerable<string>?) (navMenu.Invoke() as ViewViewComponentResult)?.ViewData?.Model ??Enumerable.Empty<string>();
+        IEnumerable<string> cats = (IEnumerable<string>?)(navMenu.Invoke() as ViewViewComponentResult)?.ViewData?.Model ?? Enumerable.Empty<string>();
         string[] categories = cats.ToArray();
 
         Assert.NotNull(categories);
         Assert.Equal(4, categories.Length);
         Assert.True(Enumerable.SequenceEqual(
-            new string[]{ 
+            new string[]{
             "C1",
             "C2",
             "C4",
             "C5",
             }
-            ,categories
+            , categories
         ));
 
+    }
+
+    [Fact]
+    public void NavManu_ValidateSelectedCategory_ValidCategory()
+    {
+        // Arrange
+        string categoryToSelect = "Apples";
+        Mock<IStoreRepository> mock = new Mock<IStoreRepository>();
+        mock.Setup(m => m.GetAll).Returns((new Product[] {
+
+        new Product {ProductId = 1, Name = "P1", Category = "Apples"},
+        new Product {ProductId  = 4, Name = "P2", Category = "Oranges"},
+
+        }).AsQueryable<Product>());
+
+        NavMenuViewComponent target =
+        new NavMenuViewComponent(mock.Object);
+        target.ViewComponentContext = new ViewComponentContext
+        {
+            ViewContext = new ViewContext
+            {
+                RouteData = new Microsoft.AspNetCore.Routing.RouteData()
+            }
+        };
+        target.RouteData.Values["category"] = categoryToSelect;
+        // Action
+        string? result = (string?)(target.Invoke()
+        as ViewViewComponentResult)?.ViewData?["category"];
+
+        // Assert
+        Assert.Equal(categoryToSelect, result);
     }
 
 
