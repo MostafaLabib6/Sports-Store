@@ -6,7 +6,8 @@
     </a>
     @foreach (string category in Model ?? Enumerable.Empty<string>())
     {
-        <a class="btn btn-outline-secondary"
+        <a class="btn @(category==ViewBag.SelectedCategory?
+           "btn-primary" : "btn-outline-secondary")"
            asp-action="Index" asp-controller="Home"
            asp-route-category="@category"
            asp-route-Page="1">
