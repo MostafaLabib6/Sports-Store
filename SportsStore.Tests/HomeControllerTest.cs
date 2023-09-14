@@ -188,6 +188,16 @@ public class HomeControllerTest
 
         NavMenuViewComponent navMenu = new NavMenuViewComponent(mock.Object);
 
+        // To avoid null referance exception when set the category ;
+        // so i initialized it with new instance;
+        navMenu.ViewComponentContext = new ViewComponentContext()
+        {
+            ViewContext = new ViewContext
+            {
+                RouteData = new Microsoft.AspNetCore.Routing.RouteData()
+            }
+        };
+
 
         //Act == Check here as ViewViewComponentResult
         IEnumerable<string> cats = (IEnumerable<string>?)(navMenu.Invoke() as ViewViewComponentResult)?.ViewData?.Model ?? Enumerable.Empty<string>();
@@ -220,8 +230,7 @@ public class HomeControllerTest
 
         }).AsQueryable<Product>());
 
-        NavMenuViewComponent target =
-        new NavMenuViewComponent(mock.Object);
+        NavMenuViewComponent target = new NavMenuViewComponent(mock.Object);
         target.ViewComponentContext = new ViewComponentContext
         {
             ViewContext = new ViewContext
@@ -232,7 +241,7 @@ public class HomeControllerTest
         target.RouteData.Values["category"] = categoryToSelect;
         // Action
         string? result = (string?)(target.Invoke()
-        as ViewViewComponentResult)?.ViewData?["category"];
+        as ViewViewComponentResult)?.ViewData?["SelectedCategory"];
 
         // Assert
         Assert.Equal(categoryToSelect, result);
