@@ -15,7 +15,7 @@ namespace SportsStore.Controllers
         }
 
         //[HttpGet("page{pageNumber}")]
-        public IActionResult Index(string? category= null,int pageNumber = 1)
+        public IActionResult Index(string? category = null, int pageNumber = 1)
         {
             ProductListViewModel ProductList = new()
             {
@@ -26,19 +26,22 @@ namespace SportsStore.Controllers
 
                 PagingInfo = new PagingInfoViewModel
                 {
-                    TotalItems = _repository.GetAll.Count(),
+                    TotalItems = (category == null) ?
+                    _repository.GetAll.Count() 
+                    : _repository.GetAll.Where(p => p.Category == category).Count(),
+                    
                     CurrentPage = pageNumber,
                     ItemsPerPage = _pageSize,
                 },
-                Category= category
-                
+                Category = category
+
             };
 
             ProductList.PagingInfo.PageSettings();
 
             return View(ProductList);
-        
-            }
+
+        }
         public IActionResult Details(string name)
         {
             return View(_repository.GetbyName(name));
