@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SportsStore.Data.Repositories;
 using SportsStore.Models;
 
 namespace SportsStore.Data
