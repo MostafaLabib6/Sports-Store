@@ -246,6 +246,37 @@ public class HomeControllerTest
         // Assert
         Assert.Equal(categoryToSelect, result);
     }
+    [Fact]
+    public void Index_Category_Specific_Product_Count_ValidCount()
+    {
+        Mock<IStoreRepository> mock = new();
+        mock.Setup(p => p.GetAll).Returns((new Product[]{
+
+            new Product {ProductId = 1, Category="Cat1", Name = "p1"},
+            new Product {ProductId = 2, Category="Cat1", Name = "p1"},
+            new Product {ProductId = 3, Category="Cat2", Name = "p1"},
+            new Product {ProductId = 4, Category="Cat3", Name = "p1"},
+            new Product {ProductId = 5, Category="Cat2", Name = "p1"},
+
+        }).AsQueryable<Product>);
+
+        HomeController controller = new HomeController(mock.Object);
+
+        Func<ViewResult, ProductListViewModel?> Models =
+            M => M?.ViewData?.Model
+                 as ProductListViewModel;
+
+        int? category1 = Models((ViewResult)controller.Index("Cat1"))?.PagingInfo.TotalItems;
+        int? category2 = Models((ViewResult)controller.Index("Cat2"))?.PagingInfo.TotalItems;
+        int? category3 = Models((ViewResult)controller.Index("Cat3"))?.PagingInfo.TotalItems;
+        int? categories = Models((ViewResult)controller.Index(null))?.PagingInfo.TotalItems;
+
+        Assert.Equal(categories, 5);
+        Assert.Equal(category1, 2);
+        Assert.Equal(category2, 2);
+        Assert.Equal(category3, 1);
+
+    }
 
 
 }

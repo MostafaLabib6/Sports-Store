@@ -11,6 +11,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<StoreDbContext>(S => S.UseSqlServer(builder.Configuration["ConnectionStrings:SportsStoreConnection"]));
 
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
+builder.Services.AddRazorPages();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -18,11 +21,12 @@ var app = builder.Build();
 
 
 app.UseStaticFiles();
-app.MapControllerRoute(
-    name: "pagination",
-    pattern: "page{pageNumber}",
-    new { Controller = "Home", action = "Index" }
-    );
+app.UseSession();
+//app.MapControllerRoute(
+//    name: "pagination",
+//    pattern: "page{pageNumber}",
+//    new { Controller = "Home", action = "Index" }
+//    );
 
 //route mapping for index with category and page
 app.MapControllerRoute(
@@ -39,6 +43,7 @@ app.MapControllerRoute(
 app.MapDefaultControllerRoute();
 
 //app.MapGet("/", () => "Hello World!");
+app.MapRazorPages();
 
 SeedDataInitializer.PopulateData(app);
 
