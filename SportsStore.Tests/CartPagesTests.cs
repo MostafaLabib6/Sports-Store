@@ -29,32 +29,40 @@ namespace SportsStore.Tests
              p1, p2
              }).AsQueryable<Product>());
             // - create a cart
-            Cart testCart = new Cart();
+            CartService testCart = new();
             testCart.AddItem(p1, 2);
             testCart.AddItem(p2, 1);
-            // - create a mock page context and session
-            Mock<ISession> mockSession = new Mock<ISession>();
-            byte[] data =
-            Encoding.UTF8.GetBytes(JsonSerializer.Serialize(testCart));
-            mockSession.Setup(c => c.TryGetValue(It.IsAny<string>(),
-           out data));
-            Mock<HttpContext> mockContext = new Mock<HttpContext>();
-            mockContext.SetupGet(c => c.Session).Returns(mockSession.Object);
+
+            //Mock<HttpContext> mockContext = new Mock<HttpContext>();
             // Action
-            CartModel cartModel = new CartModel(mockRepo.Object)
-            {
-                PageContext = new PageContext(new ActionContext
-                {
-                    HttpContext = mockContext.Object,
-                    RouteData = new RouteData(),
-                    ActionDescriptor = new PageActionDescriptor()
-                })
-            };
+            CartModel cartModel = new CartModel(mockRepo.Object, testCart);
             cartModel.OnGet("myUrl");
             //Assert
             Assert.Equal(2, cartModel.Cart?.Lines.Count());
             Assert.Equal("myUrl", cartModel.ReturnUrl);
 
+
+        }
+        [Fact]
+        public void OnPost_validateCartAddedProducts_ValidCartProducts()
+        {
+            // Arrange
+            // - create a mock repository
+            Product p1 = new Product { ProductId = 1, Name = "P1" };
+            Mock<IStoreRepository> mockRepo = new Mock<IStoreRepository>();
+            mockRepo.Setup(m => m.GetAll).Returns((new Product[] {
+             p1
+             }).AsQueryable<Product>());
+            CartService testCart = new();
+            testCart.AddItem(p1, 2);
+            CartModel cartModel = new CartModel(mockRepo.Object, testCart);
+            cartModel.OnPost(1, "myUrl");
+
+            //Assertion 
+            // Default return of ReturnUrl is "/"
+            Assert.Equal("/",cartModel.ReturnUrl);
+            Assert.Single(cartModel.Cart.Lines);
+            Assert.Equal("P1",cartModel.Cart.Lines.First().Product.Name );
 
         }
     }
