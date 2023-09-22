@@ -15,6 +15,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 
+// to save Cart session
+builder.Services.AddScoped<Cart>(sp => CartService.GetCart(sp));
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 var app = builder.Build();
 
 
