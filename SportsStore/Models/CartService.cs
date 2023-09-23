@@ -21,13 +21,13 @@ namespace SportsStore.Models
             base.AddItem(product, quantity);
             Session?.SetJson("Cart", this);
         }
-        public virtual void RemoveLine(Product product)
+        public override void RemoveLine(Product product)
         {
             base.RemoveLine(product);
             Session?.SetJson("Cart",this);
         }
 
-        public virtual void Clear()
+        public override void Clear()
         {
             base.Clear();
             Session?.Remove("Cart");

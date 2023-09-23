@@ -12,6 +12,7 @@ namespace SportsStore.Pages
 
         public CartModel(IStoreRepository repo, Cart cartService)
         {
+
             _repository = repo;
             Cart = cartService;
         }
@@ -35,7 +36,7 @@ namespace SportsStore.Pages
         public IActionResult OnPostRemove(long productId, string returnUrl)
         {
             Product? product = Cart?.Lines?.FirstOrDefault(p => p.Product.ProductId == productId)?.Product;
-            Cart.RemoveLine(product);
+            Cart.RemoveLine(product!);
 
             return RedirectToPage(new { returnUrl });
         }
