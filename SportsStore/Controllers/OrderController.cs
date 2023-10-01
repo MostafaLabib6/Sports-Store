@@ -28,7 +28,8 @@ public class OrderController : Controller
             order!.Lines = _cart.Lines.ToArray();
             _context.SaveChanges(order!);
             _cart.Clear();
-            return RedirectToPage("/Complete", order.OrderId);
+            ViewBag.OrderId = order.OrderId;
+            return RedirectToPage("/Complete", new { OrderId = order.OrderId });
 
         }
         else
