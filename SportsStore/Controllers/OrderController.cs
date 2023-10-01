@@ -21,7 +21,7 @@ public class OrderController : Controller
     [HttpPost]
     public IActionResult Checkout(Order order)
     {
-        if (order is null || order.Lines.Count > 1)
+        if (order is null || _cart.Lines.Count < 1)
             ModelState.AddModelError("", "Sorry your Cart is Empty!!!");
         if (ModelState.IsValid)
         {
