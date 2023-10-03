@@ -16,9 +16,7 @@ public class NavMenuViewComponent : ViewComponent
     {
         ViewBag.SelectedCategory = RouteData.Values["category"] ?? "NO Category";
         return View(
-            _storeRepository?.GetAll
-            .Select(x => x.Category)
-            .Distinct()
-            .OrderBy(x => x));
+            _storeRepository?.GetAll()
+            .Select(x => x.Category).Distinct().OrderBy(x => x));
     }
 }
