@@ -2,8 +2,7 @@
 
 namespace SportsStore.Data.Repositories;
 
-public interface IOrderRepository
+public interface IOrderRepository : IGenaricRepository<Order>
 {
-    public IQueryable<Order> Orders { get;}
-    public void SaveChanges (Order order);
+
 }

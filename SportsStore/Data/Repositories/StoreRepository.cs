@@ -1,4 +1,5 @@
 ﻿using SportsStore.Models;
+using System.Linq.Expressions;
 
 namespace SportsStore.Data.Repositories
 {
@@ -11,8 +12,39 @@ namespace SportsStore.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<Product> GetAll => _dbContext.Products;
+        public void Add(Product entity)
+        {
+            _dbContext.Products.Add(entity);
+        }
 
-        public Product? GetbyName(string name) => _dbContext.Products.FirstOrDefault(p => p.Name == name);
+        public void Delete(Product entity)
+        {
+            _dbContext.Products.Remove(entity);
+        }
+
+        public Product Get(Expression<Func<Product, bool>> filter)
+        {
+            return _dbContext.Products.FirstOrDefault(filter)!;
+        }
+
+        public void RemoveRange(IEnumerable<Product> entities)
+        {
+            _dbContext.RemoveRange(entities);
+        }
+
+        public void Update(Product entity)
+        {
+            _dbContext.Update(entity);
+        }
+
+        public IEnumerable<Product> GetAll()
+        {
+            return _dbContext.Products.ToArray();
+        }
+
+        public void SaveChanges(Product product)
+        {
+            _dbContext.SaveChanges();
+        }
     }
 }
