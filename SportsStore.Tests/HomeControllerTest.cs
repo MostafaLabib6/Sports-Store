@@ -22,7 +22,7 @@ public class HomeControllerTest
     {
         //Arrnge
         Mock<IStoreRepository> mock = new Mock<IStoreRepository>();
-        mock.Setup(p => p.GetAll).Returns((new Product[]{
+        mock.Setup(p => p.GetAll()).Returns((new Product[]{
             new Product{
                 Name="product 1",Price=1.00m,
                 Description="this description for product 1",
@@ -62,7 +62,7 @@ public class HomeControllerTest
         //Arrnge
         string _expectedName = "product 1";
         Mock<IStoreRepository> mock = new();
-        mock.Setup(p => p.GetbyName(_expectedName)).Returns(new Product { Name = "product 1" });
+        mock.Setup(p => p.Get(n => n.Name == _expectedName)).Returns(new Product { Name = "product 1" });
 
         HomeController controller = new(mock.Object);
         //Act
@@ -77,7 +77,7 @@ public class HomeControllerTest
         //Arrnge
         string[] _expectedNames = { "p1", "p2", "p3", "p4", "p5" };
         Mock<IStoreRepository> mock = new();
-        mock.Setup(p => p.GetAll)
+        mock.Setup(p => p.GetAll())
             .Returns((new Product[]{
                 new Product{ Name = _expectedNames[0]},
                 new Product{ Name = _expectedNames[1]},
@@ -110,7 +110,7 @@ public class HomeControllerTest
     {
         //Arrnge
         Mock<IStoreRepository> mock = new();
-        mock.Setup(p => p.GetAll).Returns((new Product[]
+        mock.Setup(p => p.GetAll()).Returns((new Product[]
         {
              new Product { Name = "P1"},
              new Product { Name = "P2"},
@@ -141,7 +141,7 @@ public class HomeControllerTest
     {
         //Arrnge
         Mock<IStoreRepository> mock = new();
-        mock.Setup(p => p.GetAll).Returns((new Product[]{
+        mock.Setup(p => p.GetAll()).Returns((new Product[]{
             new Product{ Name="p1",Category="Cat1"},
             new Product{ Name="p1",Category="Cat2"},
             new Product{ Name="p1",Category="Cat1"},
@@ -176,7 +176,7 @@ public class HomeControllerTest
     {
         //Arrange
         Mock<IStoreRepository> mock = new();
-        mock.Setup(p => p.GetAll).Returns((new Product[]{
+        mock.Setup(p => p.GetAll()).Returns((new Product[]{
             new Product{ Name="p1" , Category="C1" },
             new Product{ Name="p2" , Category="C2" },
             new Product{ Name="p3" , Category="C1" },
@@ -223,7 +223,7 @@ public class HomeControllerTest
         // Arrange
         string categoryToSelect = "Apples";
         Mock<IStoreRepository> mock = new Mock<IStoreRepository>();
-        mock.Setup(m => m.GetAll).Returns((new Product[] {
+        mock.Setup(m => m.GetAll()).Returns((new Product[] {
 
         new Product {ProductId = 1, Name = "P1", Category = "Apples"},
         new Product {ProductId  = 4, Name = "P2", Category = "Oranges"},
@@ -250,7 +250,7 @@ public class HomeControllerTest
     public void Index_Category_Specific_Product_Count_ValidCount()
     {
         Mock<IStoreRepository> mock = new();
-        mock.Setup(p => p.GetAll).Returns((new Product[]{
+        mock.Setup(p => p.GetAll()).Returns((new Product[]{
 
             new Product {ProductId = 1, Category="Cat1", Name = "p1"},
             new Product {ProductId = 2, Category="Cat1", Name = "p1"},

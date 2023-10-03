@@ -25,7 +25,7 @@ namespace SportsStore.Tests
             Product p1 = new Product { ProductId = 1, Name = "P1" };
             Product p2 = new Product { ProductId = 2, Name = "P2" };
             Mock<IStoreRepository> mockRepo = new Mock<IStoreRepository>();
-            mockRepo.Setup(m => m.GetAll).Returns((new Product[] {
+            mockRepo.Setup(m => m.GetAll()).Returns((new Product[] {
              p1, p2
              }).AsQueryable<Product>());
             // - create a cart
@@ -50,7 +50,7 @@ namespace SportsStore.Tests
             // - create a mock repository
             Product p1 = new Product { ProductId = 1, Name = "P1" };
             Mock<IStoreRepository> mockRepo = new Mock<IStoreRepository>();
-            mockRepo.Setup(m => m.GetAll).Returns((new Product[] {
+            mockRepo.Setup(m => m.GetAll()).Returns((new Product[] {
              p1
              }).AsQueryable<Product>());
             CartService testCart = new();

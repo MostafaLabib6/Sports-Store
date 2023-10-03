@@ -25,7 +25,7 @@ namespace SportsStore.Pages
         }
         public IActionResult OnPost(long productId, string returnUrl)
         {
-            Product? product = _repository.GetAll
+            Product? product = _repository.GetAll()
             .FirstOrDefault(p => p.ProductId == productId);
             if (product != null)
             {
