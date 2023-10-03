@@ -19,7 +19,7 @@ namespace SportsStore.Controllers
         {
             ProductListViewModel ProductList = new()
             {
-                Products = _repository.GetAll
+                Products = _repository.GetAll()
                 .Where(p => p.Category == category || category == null)
                 .Skip((pageNumber - 1) * _pageSize)
                 .Take(_pageSize),
@@ -27,9 +27,9 @@ namespace SportsStore.Controllers
                 PagingInfo = new PagingInfoViewModel
                 {
                     TotalItems = (category == null) ?
-                    _repository.GetAll.Count() 
-                    : _repository.GetAll.Where(p => p.Category == category).Count(),
-                    
+                    _repository.GetAll().Count()
+                    : _repository.GetAll().Where(p => p.Category == category).Count(),
+
                     CurrentPage = pageNumber,
                     ItemsPerPage = _pageSize,
                 },
@@ -44,13 +44,13 @@ namespace SportsStore.Controllers
         }
         public IActionResult Details(string name)
         {
-            return View(_repository.GetbyName(name));
+            return View(_repository.Get(n => n.Name == name));
         }
         [HttpGet("Pagination/{ProductPage}")]
         public IActionResult Pagination(int ProductPage = 1)
         {
             return View("Index",
-                _repository.GetAll
+                _repository.GetAll()
                 .Skip((ProductPage - 1) * _pageSize)
                 .Take(_pageSize));
         }
@@ -60,14 +60,14 @@ namespace SportsStore.Controllers
         {
             ProductListViewModel ProductList = new()
             {
-                Products = _repository.GetAll
+                Products = _repository.GetAll()
                 .Skip((ProductPage - 1) * _pageSize)
                 .Take(_pageSize),
                 PagingInfo = new PagingInfoViewModel
                 {
                     CurrentPage = ProductPage,
                     ItemsPerPage = _pageSize,
-                    TotalItems = _repository.GetAll.Count()
+                    TotalItems = _repository.GetAll().Count()
                 }
             };
             return View(ProductList);
