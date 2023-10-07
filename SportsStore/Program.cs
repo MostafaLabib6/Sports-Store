@@ -15,6 +15,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddRazorPages();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.AddServerSideBlazor();
 
 // to save Cart session
 builder.Services.AddScoped<Cart>(sp => CartService.GetCart(sp));
@@ -49,7 +50,8 @@ app.MapDefaultControllerRoute();
 
 //app.MapGet("/", () => "Hello World!");
 app.MapRazorPages();
-
+app.MapBlazorHub();
+app.MapFallbackToPage("/admin/{*catchall}","/Admin/Index");
 SeedDataInitializer.PopulateData(app);
 
 app.Run();
