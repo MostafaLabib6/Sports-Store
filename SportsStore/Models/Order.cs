@@ -6,7 +6,7 @@ namespace SportsStore.Models;
 
 public class Order
 {
-    [BindNever]
+    [BindNever] // mean that this property not mapped from the http request // and if the http request contains orderid that not mapped to it
     public int OrderId { get; set; }
     public ICollection<CartLine> Lines { get; set; } = new List<CartLine>();
 
@@ -29,6 +29,11 @@ public class Order
     public string? Phone { get; set; }
 
     public bool? GiftCard { get; set; } = false;
+
+    [BindNever]
+    public bool Shipped { get; set; }
+
+
 
 
 
