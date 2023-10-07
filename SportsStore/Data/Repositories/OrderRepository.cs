@@ -15,22 +15,22 @@ public class OrderRepository : IOrderRepository
 
     public void Add(Order entity)
     {
-        _dbContext.orders.Add(entity);
+        _dbContext.Orders.Add(entity);
     }
 
     public void Delete(Order entity)
     {
-        _dbContext?.orders.Remove(entity);
+        _dbContext?.Orders.Remove(entity);
     }
 
     public Order Get(Expression<Func<Order, bool>> filter)
     {
-        return _dbContext.orders.FirstOrDefault(filter)!;
+        return _dbContext.Orders.FirstOrDefault(filter)!;
     }
 
-    public IEnumerable<Order> GetAll()
+    public IQueryable<Order> GetAll()
     {
-        return _dbContext.orders.Include(o => o.Lines).ThenInclude(o => o.Product);
+        return _dbContext.Orders.Include(o => o.Lines).ThenInclude(o => o.Product);
     }
 
     public void RemoveRange(IEnumerable<Order> entities)
@@ -43,10 +43,14 @@ public class OrderRepository : IOrderRepository
         _dbContext.Update(entity);
     }
 
-    public void SaveChanges(Order order)
+    public void SaveChanges()
+    {
+        _dbContext.SaveChanges();
+    }
+    public void SaveOrder(Order order)
     {
         _dbContext.AttachRange(order.Lines.Select(p => p.Product));
-        _dbContext.orders.Add(order);
+        _dbContext.Orders.Add(order);
         _dbContext.SaveChanges();
     }
 
