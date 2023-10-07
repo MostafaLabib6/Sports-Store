@@ -1,0 +1,68 @@
+﻿﻿
+@page "/admin/products"
+@page "/admin"
+@using SportsStore.Data.Repositories;
+@inherits OwningComponentBase<IStoreRepository>
+
+<table class="table table-sm table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ProductData.Count() > 0)
+        {
+            @foreach (Product product in ProductData)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Price.ToString("c")</td>
+                    <td>@product.Category</td>
+                    <td>
+                        <NavLink class="btn btn-primary" href="@GetDetailsUrl(product.ProductId)">Details</NavLink>
+                        <NavLink class="btn btn-primary" href="@GetEditUrl(product.ProductId)">Edit</NavLink>
+                        <button class="btn btn-danger"
+                        @onclick="@(e => DeleteProduct(product))">
+                            Delete
+                        </button>
+                    </td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No Products</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="text text-center ">
+    <NavLink class="btn btn-outline-primary  col-3" href="/admin/products/create">Create</NavLink>
+</div>
+
+@code {
+    public IStoreRepository Repository => Service;
+    public IEnumerable<Product> ProductData { get; set; }
+    = Enumerable.Empty<Product>();
+    protected async override Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+    public async Task UpdateData()
+    {
+        ProductData = await Repository.GetAll().ToListAsync();
+    }
+    public async Task DeleteProduct(Product product)
+    {
+        Repository.Delete(product);
+        Repository.SaveChanges();
+        await UpdateData();
+    }
+    public string GetDetailsUrl(long id) => $"/admin/products/details/{id}";
+    public string GetEditUrl(long id) => $"/admin/products/edit/{id}";
+}
