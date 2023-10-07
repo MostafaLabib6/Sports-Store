@@ -32,7 +32,7 @@ public class OrderControllerTests
 
         //check that saveChanges method not visited
         // data did't saved
-        mockRepository.Verify(o => o.SaveChanges(It.IsAny<Order>()), Times.Never);
+        mockRepository.Verify(o => o.SaveOrder(It.IsAny<Order>()), Times.Never);
 
         //check that the method return default view,
         Assert.True(string.IsNullOrEmpty(result?.ViewName));
@@ -43,24 +43,24 @@ public class OrderControllerTests
     {
         Mock<IOrderRepository> mockRepository = new Mock<IOrderRepository>();
 
-        Product product = new Product{ Name = "p1",Category="c1"};
+        Product product = new Product { Name = "p1", Category = "c1" };
         Cart cart = new Cart();
-        cart.AddItem(product,3);
+        cart.AddItem(product, 3);
         Order order = new();
 
         //passing empty cart
         OrderController orderController = new(mockRepository.Object, cart);
-        
+
         //adding error to controller
-        orderController.ModelState.AddModelError("error","error");
+        orderController.ModelState.AddModelError("error", "error");
         var result = orderController.Checkout(order) as ViewResult;
-        
+
 
         //assert
         Assert.False(orderController.ViewData.ModelState.IsValid);
 
         //check that saveChanges method not visited
-        mockRepository.Verify(o => o.SaveChanges(It.IsAny<Order>()), Times.Never);
+        mockRepository.Verify(o => o.SaveOrder(It.IsAny<Order>()), Times.Never);
 
         //check that the method return default view,
         Assert.True(string.IsNullOrEmpty(result?.ViewName));
@@ -72,22 +72,22 @@ public class OrderControllerTests
     {
         Mock<IOrderRepository> mockRepository = new Mock<IOrderRepository>();
 
-        Product product = new Product{ Name = "p1",Category="c1"};
+        Product product = new Product { Name = "p1", Category = "c1" };
         Cart cart = new Cart();
-        cart.AddItem(product,3);
+        cart.AddItem(product, 3);
         Order order = new();
 
         //passing empty cart
         OrderController orderController = new(mockRepository.Object, cart);
-        
+
         var result = orderController.Checkout(order) as RedirectToPageResult;
-        
+
 
         //assert
         Assert.True(orderController.ViewData.ModelState.IsValid);
 
         //check that saveChanges method not visited
-        mockRepository.Verify(o => o.SaveChanges(It.IsAny<Order>()), Times.Once);
+        mockRepository.Verify(o => o.SaveOrder(It.IsAny<Order>()), Times.Once);
 
         //check that the method return default view,
         Assert.Equal("/Complete", result?.PageName);
