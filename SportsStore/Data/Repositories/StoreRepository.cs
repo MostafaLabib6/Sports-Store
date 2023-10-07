@@ -37,12 +37,16 @@ namespace SportsStore.Data.Repositories
             _dbContext.Update(entity);
         }
 
-        public IEnumerable<Product> GetAll()
+        public IQueryable<Product> GetAll()
         {
-            return _dbContext.Products.ToArray();
+            return _dbContext.Products;
         }
 
-        public void SaveChanges(Product product)
+        public void SaveChanges()
+        {
+            _dbContext.SaveChanges();
+        }
+        public void SaveProduct(Product product)
         {
             _dbContext.SaveChanges();
         }
