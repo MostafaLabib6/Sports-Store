@@ -26,7 +26,7 @@ public class OrderController : Controller
         if (ModelState.IsValid)
         {
             order!.Lines = _cart.Lines.ToArray();
-            _context.SaveChanges(order!);
+            _context.SaveOrder(order!);
             _cart.Clear();
             ViewBag.OrderId = order.OrderId;
             return RedirectToPage("/Complete", new { OrderId = order.OrderId });
